@@ -1,0 +1,61 @@
+name: tourflow-prod
+
+services:
+  app:
+    image: ${IMAGE:-ghcr.io/koishybayt-tech/tourflow:latest}
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://tourflow:${POSTGRES_PASSWORD}@db:5432/tourflow
+      GOTENBERG_URL: http://gotenberg:3000
+      PUBLIC_BASE_URL: https://${DOMAIN}
+    depends_on:
+      db: { condition: service_healthy }
+    restart: unless-stopped
+
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: tourflow
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+      POSTGRES_DB: tourflow
+    volumes: [db:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U tourflow"]
+      interval: 10s
+      retries: 10
+    restart: unless-stopped
+
+  # Daily pg_dump into the "backups" volume, 14 days kept (see docker/backup.sh).
+  backup:
+    image: postgres:16-alpine
+    environment:
+      PGPASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - backups:/backups
+      - ./docker/backup.sh:/backup.sh:ro
+    entrypoint: ["/bin/sh", "/backup.sh"]
+    depends_on:
+      db: { condition: service_healthy }
+    restart: unless-stopped
+
+  gotenberg:
+    image: gotenberg/gotenberg:8
+    restart: unless-stopped
+
+  caddy:
+    image: caddy:2-alpine
+    ports: ["80:80", "443:443"]
+    environment:
+      DOMAIN: ${DOMAIN}
+    volumes:
+      - ./docker/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on: [app]
+    restart: unless-stopped
+
+volumes:
+  db:
+  backups:
+  caddy_data:
+  caddy_config:

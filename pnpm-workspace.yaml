@@ -1,0 +1,9 @@
+allowBuilds:
+  esbuild: true
+  vue-demi: true
+  "@prisma/engines": true
+  prisma: true
+  argon2: false
+  "@parcel/watcher": true
+  unrs-resolver: true
+  sharp: false
