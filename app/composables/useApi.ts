@@ -6,8 +6,15 @@ export function errorMessage(e: unknown): string {
   return err?.data?.statusMessage || err?.data?.message || err?.statusMessage || 'Не получилось. Попробуйте ещё раз'
 }
 
+let sharedToast: ReturnType<typeof useToast> | null = null
+
+/** Called once from app.vue setup so toasts can be shown from event handlers after await. */
+export function initToast() {
+  sharedToast = useToast()
+}
+
 export function useNotify() {
-  const toast = useToast()
+  const toast = sharedToast ?? useToast()
   return {
     ok: (title: string, description?: string) => toast.add({ title, description, color: 'success', icon: 'i-lucide-check-circle-2' }),
     info: (title: string, description?: string) => toast.add({ title, description, color: 'primary', icon: 'i-lucide-info' }),

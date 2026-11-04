@@ -3,6 +3,9 @@ import type { Component } from 'vue'
 import SettingsModules from '~/components/settings/SettingsModules.vue'
 import SettingsMembers from '~/components/settings/SettingsMembers.vue'
 import SettingsCompany from '~/components/settings/SettingsCompany.vue'
+import SettingsDirections from '~/components/settings/SettingsDirections.vue'
+import SettingsRouting from '~/components/settings/SettingsRouting.vue'
+import SettingsChannels from '~/components/settings/SettingsChannels.vue'
 
 definePageMeta({ middleware: 'role', permission: 'settings' })
 useHead({ title: 'Настройки — Tourflow' })
@@ -24,6 +27,9 @@ const COMPONENTS: Record<string, Component> = {
   modules: SettingsModules,
   members: SettingsMembers,
   company: SettingsCompany,
+  directions: SettingsDirections,
+  routing: SettingsRouting,
+  channels: SettingsChannels,
 }
 </script>
 

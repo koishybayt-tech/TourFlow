@@ -41,3 +41,36 @@ export const companySchema = z.object({
   refundRule: z.string().trim().min(5, 'Опишите правило возврата'),
   refundHoldPct: z.number().int().min(0).max(100),
 })
+
+export const directionSchema = z.object({
+  id: z.string().optional(),
+  name: z.string().trim().min(2, 'Укажите название направления'),
+  keywords: z.array(z.string().trim().min(1)),
+  managerIds: z.array(z.string()),
+  mode: z.enum(['single', 'round']),
+  backupId: z.string().nullable(),
+})
+
+export const directionsSchema = z.object({
+  directions: z.array(directionSchema),
+  defaultManagerId: z.string().nullable(),
+})
+
+const pipelineEnum = z.enum(['GROUP', 'PACKAGE', 'BASE'])
+
+export const routingSchema = z.object({
+  channels: z.object({ WHATSAPP: z.union([z.literal('auto'), pipelineEnum]), INSTAGRAM: z.union([z.literal('auto'), pipelineEnum]), SITE: z.union([z.literal('auto'), pipelineEnum]) }),
+  fallback: z.union([z.literal('queue'), pipelineEnum]),
+  keywords: z.object({ GROUP: z.array(z.string()), PACKAGE: z.array(z.string()), BASE: z.array(z.string()) }),
+  links: z.array(z.object({
+    tag: z.string().trim().regex(/^[A-Za-z0-9_-]{1,24}$/, 'Метка: латиница, цифры, - и _'),
+    label: z.string().trim().min(1, 'Укажите текст ссылки'),
+    pipeline: pipelineEnum,
+    departureId: z.string().nullable().optional(),
+  })),
+})
+
+export const routingTestSchema = z.object({
+  text: z.string().trim().min(1, 'Введите текст обращения'),
+  channel: z.enum(['WHATSAPP', 'INSTAGRAM', 'SITE']),
+})

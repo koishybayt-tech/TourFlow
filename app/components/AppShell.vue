@@ -10,6 +10,7 @@ watch(() => route.fullPath, () => refreshBadges())
 useIntervalFn(() => refreshBadges(), 60_000)
 
 const open = ref(false)
+useLiveConnection()
 
 function badge(n: number | undefined, color: 'primary' | 'error' | 'warning' = 'primary') {
   return n ? { label: String(n), color, variant: 'subtle' as const, size: 'sm' as const } : undefined

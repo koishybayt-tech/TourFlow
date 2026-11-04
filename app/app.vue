@@ -1,3 +1,7 @@
+<script setup lang="ts">
+initToast()
+</script>
+
 <template>
   <UApp :toaster="{ position: 'bottom-center', duration: 3200 }">
     <NuxtLoadingIndicator color="var(--ui-primary)" />
