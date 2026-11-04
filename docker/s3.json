@@ -1,0 +1,9 @@
+{
+  "identities": [
+    {
+      "name": "tourflow",
+      "credentials": [{ "accessKey": "tourflow", "secretKey": "tourflow-s3-secret" }],
+      "actions": ["Admin", "Read", "Write", "List", "Tagging"]
+    }
+  ]
+}

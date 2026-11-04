@@ -1,0 +1,51 @@
+name: tourflow
+
+services:
+  app:
+    build: .
+    image: tourflow:dev
+    ports: ["3000:3000"]
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://tourflow:tourflow@db:5432/tourflow
+      S3_ENDPOINT: http://s3:8333
+      GOTENBERG_URL: http://gotenberg:3000
+      SMTP_URL: smtp://mailpit:1025
+    depends_on:
+      db: { condition: service_healthy }
+      s3: { condition: service_started }
+    restart: unless-stopped
+
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: tourflow
+      POSTGRES_PASSWORD: tourflow
+      POSTGRES_DB: tourflow
+    ports: ["5432:5432"]
+    volumes: [db:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U tourflow"]
+      interval: 5s
+      retries: 10
+
+  # S3-compatible storage (MinIO no longer publishes free images). Bucket is created by the app.
+  s3:
+    image: chrislusf/seaweedfs:latest
+    command: server -dir=/data -s3 -s3.port=8333 -s3.config=/etc/seaweedfs/s3.json -master.volumeSizeLimitMB=1024
+    ports: ["9000:8333"]
+    volumes:
+      - s3:/data
+      - ./docker/s3.json:/etc/seaweedfs/s3.json:ro
+
+  gotenberg:
+    image: gotenberg/gotenberg:8
+    ports: ["3001:3000"]
+
+  mailpit:
+    image: axllent/mailpit:latest
+    ports: ["8025:8025", "1025:1025"]
+
+volumes:
+  db:
+  s3:

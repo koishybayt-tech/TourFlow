@@ -1,0 +1,27 @@
+{
+  "app": {
+    "name": "Tourflow"
+  },
+  "nav": {
+    "home": "Главная",
+    "inbox": "Сообщения",
+    "deals": "Заявки",
+    "tasks": "Задачи",
+    "calendar": "Календарь",
+    "clients": "Клиенты",
+    "groupTours": "Групповые туры",
+    "tours": "Мои туры",
+    "departures": "Выезды",
+    "guides": "Гиды",
+    "packageTours": "Пакетные туры",
+    "packageSearch": "Поиск туров",
+    "bookings": "Брони у туроператоров",
+    "reports": "Отчёты",
+    "tickets": "Авиабилеты и отели",
+    "settings": "Настройки"
+  },
+  "home": {
+    "title": "Мой день",
+    "placeholder": "Каркас готов. Разделы появятся в следующих фазах."
+  }
+}

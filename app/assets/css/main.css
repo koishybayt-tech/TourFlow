@@ -1,0 +1,136 @@
+@import "tailwindcss";
+@import "@nuxt/ui";
+
+@source "../../../shared";
+
+@theme static {
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+
+  --color-app-bg: #F7F7F8;
+  --color-surface: #FFFFFF;
+  --color-line: #E6E7EA;
+
+  --color-ok: #12B76A;
+  --color-ok-bg: #ECFDF3;
+  --color-ok-text: #067647;
+  --color-warn: #F79009;
+  --color-warn-bg: #FFFAEB;
+  --color-warn-text: #B54708;
+  --color-bad: #F04438;
+  --color-bad-bg: #FEF3F2;
+  --color-bad-text: #B42318;
+  --color-sys: #7A5AF8;
+  --color-sys-bg: #F4F3FF;
+  --color-sys-text: #5925DC;
+
+  --color-whatsapp: #25D366;
+  --color-instagram: #E1306C;
+
+  --radius-card: 12px;
+  --radius-modal: 16px;
+  --shadow-pop: 0 12px 32px rgba(16, 24, 40, .14);
+}
+
+/* Design tokens → Nuxt UI variables (docs/04_DESIGN_SYSTEM.md) */
+:root {
+  --ui-radius: 0.5rem;
+  --ui-bg: #F7F7F8;
+  --ui-bg-muted: #F1F2F4;
+  --ui-bg-elevated: #FFFFFF;
+  --ui-bg-accented: #E9EAED;
+  --ui-border: #E6E7EA;
+  --ui-border-muted: #EEEFF1;
+  --ui-text: #0F1115;
+  --ui-text-highlighted: #0F1115;
+  --ui-text-muted: #5A606B;
+  --ui-text-dimmed: #8A909A;
+  --ui-text-toned: #3A3F48;
+  --ui-primary: #4F46E5;
+}
+
+.dark {
+  --color-app-bg: #0B0C0E;
+  --color-surface: #141518;
+  --color-line: #26282D;
+  --color-ok-bg: rgba(18, 183, 106, .14);
+  --color-ok-text: #47CD89;
+  --color-warn-bg: rgba(247, 144, 9, .14);
+  --color-warn-text: #FDB022;
+  --color-bad-bg: rgba(240, 68, 56, .14);
+  --color-bad-text: #F97066;
+  --color-sys-bg: rgba(122, 90, 248, .16);
+  --color-sys-text: #BDB4FE;
+
+  --ui-bg: #0B0C0E;
+  --ui-bg-muted: #17181C;
+  --ui-bg-elevated: #141518;
+  --ui-bg-accented: #1E2025;
+  --ui-border: #26282D;
+  --ui-border-muted: #1E2025;
+  --ui-text: #EDEEF0;
+  --ui-text-highlighted: #FFFFFF;
+  --ui-text-muted: #9AA0AA;
+  --ui-text-dimmed: #6B717B;
+  --ui-text-toned: #C9CDD3;
+  --ui-primary: #818CF8;
+}
+
+html {
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  background: var(--ui-bg);
+  color: var(--ui-text);
+}
+
+.tabular, .money {
+  font-variant-numeric: tabular-nums;
+}
+
+.card {
+  background: var(--ui-bg-elevated);
+  border: 1px solid var(--ui-border);
+  border-radius: var(--radius-card);
+}
+
+/* Page transition: fade + 8px Y */
+.page-enter-active,
+.page-leave-active {
+  transition: opacity 200ms ease-out, transform 200ms ease-out;
+}
+.page-enter-from,
+.page-leave-to {
+  opacity: 0;
+  transform: translateY(8px);
+}
+
+/* Skeleton shimmer */
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: var(--ui-bg-accented);
+  border-radius: 6px;
+}
+.skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .45), transparent);
+  animation: shimmer 1.2s infinite;
+}
+.dark .skeleton::after {
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .06), transparent);
+}
+@keyframes shimmer {
+  100% { transform: translateX(100%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-enter-from,
+  .page-leave-to { transform: none; }
+  .skeleton::after { animation: none; }
+  *, *::before, *::after { scroll-behavior: auto !important; }
+}
