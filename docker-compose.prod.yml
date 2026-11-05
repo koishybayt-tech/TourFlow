@@ -8,6 +8,9 @@ services:
       DATABASE_URL: postgresql://tourflow:${POSTGRES_PASSWORD}@db:5432/tourflow
       GOTENBERG_URL: http://gotenberg:3000
       PUBLIC_BASE_URL: https://${DOMAIN}
+      NUXT_PUBLIC_BASE_URL: https://${DOMAIN}
+      # Built-in S3 (profile "s3"); for an external S3 in Kazakhstan set S3_* in .env instead.
+      S3_ENDPOINT: ${S3_ENDPOINT:-http://s3:8333}
     depends_on:
       db: { condition: service_healthy }
     restart: unless-stopped
@@ -42,6 +45,16 @@ services:
     image: gotenberg/gotenberg:8
     restart: unless-stopped
 
+  # S3-compatible storage on the same server. Start with: docker compose --profile s3 -f docker-compose.prod.yml up -d
+  s3:
+    image: chrislusf/seaweedfs:latest
+    profiles: ["s3"]
+    command: server -dir=/data -s3 -s3.port=8333 -s3.config=/etc/seaweedfs/s3.json -master.volumeSizeLimitMB=1024
+    volumes:
+      - s3:/data
+      - ./docker/s3.prod.json:/etc/seaweedfs/s3.json:ro
+    restart: unless-stopped
+
   caddy:
     image: caddy:2-alpine
     ports: ["80:80", "443:443"]
@@ -57,5 +70,6 @@ services:
 volumes:
   db:
   backups:
+  s3:
   caddy_data:
   caddy_config:

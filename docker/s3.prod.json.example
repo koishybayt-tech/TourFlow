@@ -1,0 +1,9 @@
+{
+  "identities": [
+    {
+      "name": "tourflow",
+      "credentials": [{ "accessKey": "CHANGE_ME_ACCESS_KEY", "secretKey": "CHANGE_ME_SECRET_KEY_32_CHARS_MIN" }],
+      "actions": ["Admin", "Read", "Write", "List", "Tagging"]
+    }
+  ]
+}
