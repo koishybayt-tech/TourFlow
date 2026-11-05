@@ -10,6 +10,15 @@ const signed = computed(() => contract.value?.status === 'SIGNED' || contract.va
 const statusText = computed(() => signed.value ? 'Подписан' : contract.value ? 'Ждёт подписей' : 'Не сформирован')
 const side = (s: string) => contract.value?.signatures.find(x => x.side === s)
 const wizardOpen = ref(false)
+const anySigned = computed(() => !!contract.value?.signatures.some(x => x.signedAt))
+async function copyLink(sideKey: 'client' | 'agency') {
+  const links = await api<{ client: string, agency: string }>(`/api/contracts/${contract.value!.id}/links`)
+  await navigator.clipboard.writeText(links[sideKey])
+  useNotify().ok('Ссылка скопирована')
+}
+async function annul() {
+  if (await mutate(() => api(`/api/contracts/${contract.value!.id}/annul`, { method: 'POST' }), 'Договор аннулирован')) emit('changed')
+}
 </script>
 
 <template>
@@ -40,7 +49,15 @@ const wizardOpen = ref(false)
             :class="side(s.key)?.signedAt ? 'text-ok' : 'text-warn'"
           />
           <span class="flex-1">{{ s.label }}</span>
-          <span class="text-xs text-(--ui-text-muted)">{{ side(s.key)?.signedAt ? `подписал ${formatDateTime(side(s.key)!.signedAt)}` : 'ждёт подписи' }}</span>
+          <span class="text-xs text-(--ui-text-muted)">{{ side(s.key)?.signedAt ? `${side(s.key)?.signerName ?? ''} · ${formatDateTime(side(s.key)!.signedAt)}` : 'ждёт подписи' }}</span>
+          <UButton
+            v-if="!side(s.key)?.signedAt"
+            size="xs"
+            variant="ghost"
+            icon="i-lucide-link"
+            aria-label="Копировать ссылку на подпись"
+            @click="copyLink(s.key as 'client' | 'agency')"
+          />
         </div>
       </div>
     </div>
@@ -63,6 +80,14 @@ const wizardOpen = ref(false)
         :variant="contract ? 'outline' : 'solid'"
         :color="contract ? 'neutral' : 'primary'"
         @click="wizardOpen = true"
+      />
+      <UButton
+        v-if="contract && !anySigned"
+        icon="i-lucide-ban"
+        color="error"
+        variant="ghost"
+        label="Аннулировать"
+        @click="annul"
       />
       <UButton
         v-if="!signed"

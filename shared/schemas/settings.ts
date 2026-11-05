@@ -94,3 +94,16 @@ export const stageUpdateSchema = z.object({
   description: z.string().trim(),
   requirements: z.array(requirementSchema),
 })
+
+export const templateVariableSchema = z.object({ placeholder: z.string(), field: z.string().nullable(), count: z.number().int() })
+
+export const templateSchema = z.object({
+  name: z.string().trim().min(2, 'Назовите шаблон'),
+  kind: z.enum(['contract', 'receipt']),
+  pipeline: z.enum(['GROUP', 'PACKAGE', 'BASE']).nullable().optional(),
+  condition: z.enum(['all', 'pkg', 'hotel', 'visa', 'kids']).nullable().optional(),
+  short: z.string().trim().optional(),
+  body: z.string().nullable().optional(),
+  fileKey: z.string().nullable().optional(),
+  variables: z.array(templateVariableSchema),
+})

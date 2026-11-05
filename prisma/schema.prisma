@@ -542,6 +542,12 @@ model Contract {
   values         Json
   emptyFields    String[]
   status         SignStatus       @default(NONE)
+  /// Rendered plain text shown on the signing page.
+  text           String?
+  pdfKey         String?
+  /// Receipts sent together share a bundle id (one link for the client).
+  bundle         String?
+  createdById    String?
   createdAt      DateTime         @default(now())
   annulledAt     DateTime?
   deal           Deal             @relation(fields: [dealId], references: [id], onDelete: Cascade)
@@ -556,6 +562,7 @@ model Signature {
   contractId String
   side       String // client | agency
   token      String    @unique
+  memberId   String?
   expiresAt  DateTime?
   signerName String?
   method     String? // ncalayer | egov | sms | paper
