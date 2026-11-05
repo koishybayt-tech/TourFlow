@@ -172,7 +172,7 @@ export async function dealView(ctx: AuthContext, id: string) {
           signatures: c.signatures.map(s => ({ id: s.id, side: s.side, token: s.token, signerName: s.signerName, method: s.method, signedAt: s.signedAt })),
         }))
       : [],
-    receipts: receiptTemplates.map(t => {
+    receipts: receiptTemplates.map((t) => {
       const contract = deal.contracts.find(c => c.templateId === t.id && !c.annulledAt)
       return { id: t.id, name: t.name, short: t.short, condition: t.condition, recommended: isReceiptRecommended(t.condition, receiptCtx), contractId: contract?.id ?? null, status: contract?.status ?? null }
     }),

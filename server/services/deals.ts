@@ -151,7 +151,8 @@ export async function autoAdvance(actor: Actor, dealId: string): Promise<Advance
     await moveToStage(actor, dealId, s.order, { auto: true })
   }
   const to = stages.find(s => s.order === targetOrder)!
-  await notify(actor.organizationId, deal.managerId, 'Статус обновлён автоматически', `Заявка №${deal.number}: ${current.name} → ${to.name}`, `/deals/${dealId}`)
+  // The actor already sees the result on screen; notify the manager only when someone else triggered it.
+  if (deal.managerId !== actor.memberId) await notify(actor.organizationId, deal.managerId, 'Статус обновлён автоматически', `Заявка №${deal.number}: ${current.name} → ${to.name}`, `/deals/${dealId}`)
   publish(actor.organizationId, { type: 'deal', dealId })
   return { moved: true, from: current.name, to: to.name }
 }

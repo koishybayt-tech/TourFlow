@@ -47,7 +47,7 @@ export default defineEventHandler(async (event) => {
     }
   }))
   return {
-    stages: stages.map(s => {
+    stages: stages.map((s) => {
       const inStage = rows.filter(r => r.stageId === s.id && !r.wonAt && !r.lostAt)
       return { id: s.id, name: s.name, order: s.order, count: inStage.length, sum: showMoney ? inStage.reduce((a, r) => a + (r.price ?? 0), 0) : null, requirements: s.requirements.filter(r => r.required).length }
     }),
