@@ -8,6 +8,7 @@ import SettingsRouting from '~/components/settings/SettingsRouting.vue'
 import SettingsChannels from '~/components/settings/SettingsChannels.vue'
 import SettingsStages from '~/components/settings/SettingsStages.vue'
 import SettingsTemplates from '~/components/settings/SettingsTemplates.vue'
+import SettingsOperators from '~/components/settings/SettingsOperators.vue'
 
 definePageMeta({ middleware: 'role', permission: 'settings' })
 useHead({ title: 'Настройки — Tourflow' })
@@ -34,6 +35,7 @@ const COMPONENTS: Record<string, Component> = {
   channels: SettingsChannels,
   stages: SettingsStages,
   templates: SettingsTemplates,
+  operators: SettingsOperators,
 }
 </script>
 

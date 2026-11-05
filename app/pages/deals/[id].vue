@@ -42,7 +42,7 @@ const sections = computed(() => {
   const reqSec = (k: string) => v.status.requirements.filter(r => r.section === k)
   const all = [
     { key: 'client' as Key, title: 'Клиент и туристы', done: !!(v.client.fullName && v.client.hasIin && v.client.address) && v.travelers.length >= v.deal.people && v.travelers.every(t => t.hasPassport) },
-    { key: 'tour' as Key, title: 'Тур', done: reqSec('tour').length ? reqSec('tour').every(r => r.done) : !!v.deal.dates },
+    { key: 'tour' as Key, title: 'Тур', done: v.deal.pipeline === 'PACKAGE' ? v.offers.some(o => o.status === 'CHOSEN') && v.bookings.some(b => b.status === 'CONFIRMED' || b.status === 'PAID') : reqSec('tour').length ? reqSec('tour').every(r => r.done) : !!v.deal.dates },
     ...(v.money ? [{ key: 'pay' as Key, title: 'Цена и оплаты', done: v.money.price > 0 && v.money.paid >= v.money.price }] : []),
     ...(can('documents') ? [{ key: 'contract' as Key, title: 'Договор', done: v.contracts.some(c => c.kind === 'contract' && !c.annulledAt && (c.status === 'SIGNED' || c.status === 'PAPER')) || v.documents.some(d => d.type === 'Подписанный договор') }] : []),
     ...(can('documents') ? [{ key: 'receipts' as Key, title: 'Расписки', done: false }] : []),
@@ -256,6 +256,7 @@ const PIPES = [{ value: 'GROUP', label: 'Групповые туры' }, { value
           :view="view"
           :num="numOf('tour')"
           @changed="onChanged"
+          @upload="upload"
         />
         <DealPaymentsSection
           v-if="view.money"
