@@ -2,7 +2,7 @@
 import type { DealChanged, DealView } from '~/types/deal'
 
 const props = defineProps<{ view: DealView, num: number }>()
-const emit = defineEmits<{ changed: Parameters<DealChanged> }>()
+const emit = defineEmits<{ changed: Parameters<DealChanged>, upload: [type: string] }>()
 const open = defineModel<boolean>('open', { default: true })
 const d = computed(() => props.view.deal)
 const isGroup = computed(() => d.value.pipeline === 'GROUP')
@@ -13,6 +13,7 @@ async function patch(body: Record<string, unknown>) {
   if (r) emit('changed', r)
 }
 const done = computed(() => {
+  if (isPackage.value) return props.view.offers.some(o => o.status === 'CHOSEN') && props.view.bookings.some(b => b.status === 'CONFIRMED' || b.status === 'PAID')
   const reqs = props.view.status.requirements.filter(r => r.section === 'tour')
   return reqs.length ? reqs.every(r => r.done) : !!(d.value.dates && (isGroup.value ? props.view.departure : true))
 })
@@ -129,6 +130,7 @@ const freeFieldReqs = computed(() => props.view.status.requirements.filter(r => 
       class="mt-6"
       :view="view"
       @changed="emit('changed', $event)"
+      @upload="emit('upload', $event)"
     />
   </StepSection>
 </template>
