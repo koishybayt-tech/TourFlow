@@ -229,6 +229,7 @@ async function main() {
       modules: { group: true, package: true, tickets: true, team: true, migration: false },
       routing: {},
       dealCounter: 17,
+      contractCounter: 2,
     },
   })
   const orgId = org.id
