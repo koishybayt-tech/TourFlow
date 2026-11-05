@@ -70,11 +70,10 @@ function addSub() {
   patch({ subtasks: [...task.value!.subtasks, { t: subInput.value.trim(), done: false }] })
   subInput.value = ''
 }
-async function remove() {
-  if (await mutate(() => api(`/api/tasks/${task.value!.id}`, { method: 'DELETE' }), 'Задача удалена')) {
-    emit('changed')
-    emit('close')
-  }
+function remove() {
+  const id = task.value!.id
+  emit('close')
+  undoable('Задача удалена', () => api(`/api/tasks/${id}`, { method: 'DELETE' }), { done: () => emit('changed') })
 }
 const dueLocal = computed(() => (task.value?.dueAt ? { d: isoDay(task.value.dueAt), t: formatTime(task.value.dueAt) } : { d: '', t: '18:00' }))
 function setDue(d: string, t: string) {

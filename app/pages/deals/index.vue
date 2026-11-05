@@ -86,7 +86,13 @@ function cancelMove() {
   refresh()
 }
 
-const newOpen = ref(false)
+const newOpen = ref(route.query.new === '1')
+watch(() => route.query.new, (v) => {
+  if (v === '1') newOpen.value = true
+})
+watch(newOpen, (v) => {
+  if (!v && route.query.new) router.replace({ query: { ...route.query, new: undefined } })
+})
 const managerItems = computed(() => [{ value: 'all', label: 'Все менеджеры' }, { value: 'none', label: 'Без ответственного' }, ...(me.value?.members ?? []).map(m => ({ value: m.id, label: m.name }))])
 </script>
 

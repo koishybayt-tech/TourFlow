@@ -1,5 +1,7 @@
 <script setup lang="ts">
-defineProps<{ label: string, value: string | number, hint?: string, icon?: string, to?: string, tone?: 'neutral' | 'primary' | 'success' | 'warning' | 'error' }>()
+import { Motion } from 'motion-v'
+
+defineProps<{ label: string, value: string | number, hint?: string, icon?: string, to?: string, tone?: 'neutral' | 'primary' | 'success' | 'warning' | 'error', index?: number }>()
 const tones = {
   neutral: 'bg-(--ui-bg-muted) text-(--ui-text-muted)',
   primary: 'bg-indigo-50 text-indigo-600 dark:bg-indigo-500/15 dark:text-indigo-300',
@@ -10,29 +12,36 @@ const tones = {
 </script>
 
 <template>
-  <component
-    :is="to ? resolveComponent('NuxtLink') : 'div'"
-    :to="to"
-    class="card p-5 flex items-start gap-4 transition-colors"
-    :class="to ? 'hover:border-(--ui-primary)/40 focus-visible:outline-2 focus-visible:outline-(--ui-primary)' : ''"
+  <Motion
+    :initial="{ opacity: 0, y: 6 }"
+    :animate="{ opacity: 1, y: 0 }"
+    :transition="{ duration: 0.2, ease: 'easeOut', delay: (index ?? 0) * 0.03 }"
+    class="contents-motion"
   >
-    <span
-      v-if="icon"
-      class="size-10 rounded-lg grid place-items-center shrink-0"
-      :class="tones[tone || 'neutral']"
+    <component
+      :is="to ? resolveComponent('NuxtLink') : 'div'"
+      :to="to"
+      class="card p-5 flex items-start gap-4 transition-colors"
+      :class="to ? 'hover:border-(--ui-primary)/40 focus-visible:outline-2 focus-visible:outline-(--ui-primary)' : ''"
     >
-      <UIcon
-        :name="icon"
-        class="size-5"
-      />
-    </span>
-    <span class="min-w-0">
-      <span class="block text-[12.5px] text-(--ui-text-muted)">{{ label }}</span>
-      <span class="block text-2xl font-semibold tabular mt-0.5 text-(--ui-text-highlighted)">{{ value }}</span>
       <span
-        v-if="hint"
-        class="block text-xs text-(--ui-text-muted) mt-0.5"
-      >{{ hint }}</span>
-    </span>
-  </component>
+        v-if="icon"
+        class="size-10 rounded-lg grid place-items-center shrink-0"
+        :class="tones[tone || 'neutral']"
+      >
+        <UIcon
+          :name="icon"
+          class="size-5"
+        />
+      </span>
+      <span class="min-w-0">
+        <span class="block text-[12.5px] text-(--ui-text-muted)">{{ label }}</span>
+        <span class="block text-2xl font-semibold tabular mt-0.5 text-(--ui-text-highlighted)">{{ value }}</span>
+        <span
+          v-if="hint"
+          class="block text-xs text-(--ui-text-muted) mt-0.5"
+        >{{ hint }}</span>
+      </span>
+    </component>
+  </Motion>
 </template>

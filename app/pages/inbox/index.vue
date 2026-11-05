@@ -55,6 +55,14 @@ onMounted(() => {
   else if (selectedId.value) markRead()
 })
 
+// J/K — next/previous dialog
+function step(dir: 1 | -1) {
+  const i = rows.value.findIndex(r => r.id === selectedId.value)
+  const next = rows.value[Math.max(0, Math.min(rows.value.length - 1, i + dir))]
+  if (next) select(next.id)
+}
+defineShortcuts({ j: () => step(1), k: () => step(-1) })
+
 function select(id: string) {
   router.replace({ query: { ...route.query, c: id } })
 }

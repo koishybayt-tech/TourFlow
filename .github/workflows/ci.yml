@@ -27,6 +27,13 @@ jobs:
       DATABASE_URL: postgresql://tourflow:tourflow@localhost:5432/tourflow
       NUXT_APP_SECRET: Y2ktYXBwLXNlY3JldC1mb3ItdGVzdHMtb25seS0wMDAwMDA=
       PII_ENCRYPTION_KEY: MDEyMzQ1Njc4OWFiY2RlZjAxMjM0NTY3ODlhYmNkZWY=
+      S3_ENDPOINT: http://localhost:9000
+      S3_BUCKET: tourflow
+      S3_ACCESS_KEY: tourflow
+      S3_SECRET_KEY: tourflow-s3-secret
+      GOTENBERG_URL: http://localhost:3001
+      PUBLIC_BASE_URL: http://localhost:3000
+      JOBS_DISABLED: '1'
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -39,6 +46,11 @@ jobs:
       - run: pnpm typecheck
       - run: pnpm test
       - run: pnpm build
+      - name: Start S3 (SeaweedFS) and Gotenberg
+        run: |
+          docker run -d --name s3 -p 9000:8333 -v "$PWD/docker/s3.json:/etc/seaweedfs/s3.json:ro" chrislusf/seaweedfs:latest server -dir=/data -s3 -s3.port=8333 -s3.config=/etc/seaweedfs/s3.json
+          docker run -d --name gotenberg -p 3001:3000 gotenberg/gotenberg:8
+          for i in $(seq 1 30); do curl -s -o /dev/null http://localhost:9000 && break; sleep 2; done
       - run: pnpm exec prisma migrate deploy
       - run: pnpm db:seed
       - run: pnpm exec playwright install --with-deps chromium
