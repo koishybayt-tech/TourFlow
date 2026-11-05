@@ -74,3 +74,23 @@ export const routingTestSchema = z.object({
   text: z.string().trim().min(1, 'Введите текст обращения'),
   channel: z.enum(['WHATSAPP', 'INSTAGRAM', 'SITE']),
 })
+
+export const requirementSchema = z.object({
+  id: z.string().optional(),
+  type: z.enum(['FIELD', 'DOC', 'SIGN', 'PAY', 'COMMENT', 'CHECK', 'DEPARTURE', 'TRAVELERS', 'EVENT', 'CLIENT']),
+  label: z.string().trim().min(2, 'Опишите требование'),
+  required: z.boolean(),
+  config: z.object({
+    field: z.string().optional(),
+    docType: z.string().optional(),
+    mode: z.enum(['prepay', 'full']).optional(),
+    perPerson: z.number().int().optional(),
+    eventType: z.string().optional(),
+  }).default({}),
+})
+
+export const stageUpdateSchema = z.object({
+  name: z.string().trim().min(2, 'Назовите этап'),
+  description: z.string().trim(),
+  requirements: z.array(requirementSchema),
+})
