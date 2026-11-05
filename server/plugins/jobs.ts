@@ -1,5 +1,7 @@
 import { PgBoss } from 'pg-boss'
 import { runPriceWatch } from '../jobs/priceWatch'
+import { runReminders } from '../jobs/reminders'
+import { runWeeklyReport } from '../jobs/weeklyReport'
 
 /**
  * Background jobs on PostgreSQL (pg-boss, no Redis): price watch hourly, reminders, weekly report.
@@ -7,6 +9,8 @@ import { runPriceWatch } from '../jobs/priceWatch'
  */
 export const JOBS: Record<string, { cron: string, run: () => Promise<unknown> }> = {
   'price-watch': { cron: '0 * * * *', run: runPriceWatch },
+  'reminders': { cron: '*/5 * * * *', run: () => runReminders() },
+  'weekly-report': { cron: '0 9 * * 1', run: runWeeklyReport },
 }
 
 export default defineNitroPlugin(async (nitro) => {

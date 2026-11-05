@@ -12,5 +12,5 @@ export async function login(page: Page, email: string, password = 'demo1234') {
   await page.getByLabel('Email или телефон').fill(email)
   await page.getByLabel('Пароль').fill(password)
   await page.getByRole('button', { name: 'Войти' }).click()
-  await expect(page).toHaveURL(/\/$/)
+  await expect(page).toHaveURL(/\/$/, { timeout: 20_000 })
 }

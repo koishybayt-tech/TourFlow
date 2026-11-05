@@ -41,6 +41,7 @@
     "@prisma/client": "7.10.1",
     "@vueuse/core": "^15.0.0",
     "@vueuse/nuxt": "^15.0.0",
+    "chart.js": "^4.6.1",
     "dayjs": "^1.11.23",
     "docxtemplater": "^3.71.1",
     "exceljs": "^4.4.0",
@@ -55,6 +56,7 @@
     "qrcode": "^1.5.4",
     "tailwindcss": "^4.3.4",
     "vue": "^3.5.44",
+    "vue-chartjs": "^5.3.4",
     "vue-draggable-plus": "^0.6.1",
     "vue-router": "^5.4.0",
     "zod": "^4.6.7"
