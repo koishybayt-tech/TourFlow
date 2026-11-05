@@ -32,6 +32,10 @@ async function changePassword() {
   }
 }
 
+const tg = ref<{ code: string, bot: string | null, enabled: boolean } | null>(null)
+async function linkTelegram() {
+  tg.value = await mutate(() => api<{ code: string, bot: string | null, enabled: boolean }>('/api/profile/telegram', { method: 'POST' })) ?? null
+}
 const notifRows = [
   'Новая заявка назначена', 'Задача назначена или просрочена', 'Оплата получена',
   'Дедлайн оплаты оператору ≤ 7 дней', 'Клиент подписал документ', 'Выезд в риске недобора',
@@ -153,6 +157,33 @@ const notifRows = [
         </h2>
         <p class="text-sm text-(--ui-text-muted)">
           В приложении — всегда. В Telegram — после подключения бота (укажите chat ID в профиле).
+        </p>
+      </div>
+      <div class="px-5 py-4 border-b border-(--ui-border) space-y-2">
+        <p class="text-sm font-medium flex items-center gap-2">
+          <UIcon name="i-lucide-send" /> Telegram-бот
+          <UBadge
+            :color="me?.user.telegramChatId ? 'success' : 'neutral'"
+            variant="subtle"
+            :label="me?.user.telegramChatId ? 'Подключён' : 'Не подключён'"
+          />
+        </p>
+        <UButton
+          v-if="!tg"
+          size="sm"
+          variant="soft"
+          label="Получить код привязки"
+          @click="linkTelegram"
+        />
+        <p
+          v-else
+          class="text-sm"
+        >
+          Откройте бота{{ tg.bot ? ` @${tg.bot}` : '' }} и отправьте: <code class="bg-(--ui-bg-muted) px-1.5 py-0.5 rounded">/start {{ tg.code }}</code>
+          <span
+            v-if="!tg.enabled"
+            class="block text-xs text-warn-text mt-1"
+          >Бот ещё не настроен на сервере (TELEGRAM_BOT_TOKEN).</span>
         </p>
       </div>
       <div

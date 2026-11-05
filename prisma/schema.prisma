@@ -148,6 +148,7 @@ model User {
   name           String
   position       String?
   telegramChatId String?
+  telegramCode   String?  @unique
   createdAt      DateTime @default(now())
 
   members       Member[]
@@ -486,6 +487,7 @@ model Event {
   dealId         String?
   departureId    String?
   remind         String?
+  remindedAt     DateTime?
   createdAt      DateTime     @default(now())
   organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   assignee       Member?      @relation(fields: [assigneeId], references: [id], onDelete: SetNull)

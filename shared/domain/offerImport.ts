@@ -37,7 +37,7 @@ function toIso(d: string, fallbackYear: number): string | null {
 
 /** Best-effort parsing of an offer copied from an operator site or messenger. */
 export function parseOfferText(text: string, now = new Date()): OfferDraft {
-  const t = text.replace(/ /g, ' ')
+  const t = text.replace(/\u00A0/g, ' ')
   const stars = t.match(/(\d)\s*(?:\*|★|звезд|звёзд)/i)
   const dates = [...t.matchAll(/\b\d{1,2}[./-]\d{1,2}(?:[./-]\d{2,4})?\b/g)].map(m => m[0])
   const nights = t.match(/(\d{1,2})\s*(?:ноч|night|н\.)/i)

@@ -6,6 +6,7 @@ import type { AuthContext } from '../utils/auth'
 import { prisma } from '../utils/prisma'
 import { publish } from '../utils/live'
 import { checkDepartureRules } from './departures'
+import { sendTelegram } from '../providers/notify/telegram'
 
 type Actor = Pick<AuthContext, 'organizationId' | 'memberId' | 'name' | 'db'> | { organizationId: string, memberId: null, name: 'Система', db: AuthContext['db'] }
 
@@ -21,10 +22,13 @@ export async function logDeal(actor: Actor, dealId: string, kind: string, text: 
   })
 }
 
+/** In-app notification (live over SSE) + Telegram if the member linked the bot. */
 export async function notify(organizationId: string, memberId: string | null | undefined, title: string, body: string, link?: string) {
   if (!memberId) return
   const n = await prisma.notification.create({ data: { organizationId, memberId, title, body, link } })
   publish(organizationId, { type: 'notification', memberId, id: n.id, title, body, link })
+  const member = await prisma.member.findUnique({ where: { id: memberId }, include: { user: { select: { telegramChatId: true } } } })
+  await sendTelegram(member?.user.telegramChatId, `${title}\n${body}`, link)
 }
 
 export async function loadStages(db: AuthContext['db'], pipeline: Pipeline): Promise<(StageDef & { pipeline: Pipeline })[]> {
