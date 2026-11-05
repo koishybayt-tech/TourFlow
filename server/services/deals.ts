@@ -5,6 +5,7 @@ import { formatRange, startOfAlmatyDay } from '#shared/utils/dates'
 import type { AuthContext } from '../utils/auth'
 import { prisma } from '../utils/prisma'
 import { publish } from '../utils/live'
+import { checkDepartureRules } from './departures'
 
 type Actor = Pick<AuthContext, 'organizationId' | 'memberId' | 'name' | 'db'> | { organizationId: string, memberId: null, name: 'Система', db: AuthContext['db'] }
 
@@ -154,6 +155,7 @@ export async function autoAdvance(actor: Actor, dealId: string): Promise<Advance
   // The actor already sees the result on screen; notify the manager only when someone else triggered it.
   if (deal.managerId !== actor.memberId) await notify(actor.organizationId, deal.managerId, 'Статус обновлён автоматически', `Заявка №${deal.number}: ${current.name} → ${to.name}`, `/deals/${dealId}`)
   publish(actor.organizationId, { type: 'deal', dealId })
+  if (deal.departureId) await checkDepartureRules(actor.db, actor.organizationId, deal.departureId)
   return { moved: true, from: current.name, to: to.name }
 }
 

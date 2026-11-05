@@ -49,3 +49,26 @@ export async function departuresAtRisk(db: ScopedDb, days = 21) {
     .map(d => ({ ...d, ready: parts[d.id]!.filter(p => p.ready).length, total: parts[d.id]!.length }))
     .filter(d => d.ready < d.minSeats)
 }
+
+/**
+ * Departure automation (docs/02_FEATURES.md §11.3): when the minimum is ready — task «Купить авиабилеты»,
+ * when everyone is ready — «Забронировать гостиницу». Idempotent via flags on the departure.
+ */
+export async function checkDepartureRules(db: ScopedDb, organizationId: string, departureId: string) {
+  const dep = await db.departure.findFirst({ where: { id: departureId } })
+  if (!dep) return
+  const parts = (await departureParticipants(db, [dep.id]))[dep.id] ?? []
+  const ready = parts.filter(p => p.ready).length
+  const owner = await db.member.findFirst({ where: { role: 'OWNER', active: true } })
+  const make = (title: string, description: string, dueAt: Date) => db.task.create({
+    data: { organizationId, title, description, priority: 'HIGH', dueAt, assigneeId: owner?.id ?? null, departureId: dep.id, log: [{ at: new Date().toISOString(), text: 'Создана автоматически по правилу выезда', actor: 'Система' }] },
+  })
+  if (!dep.flightTaskDone && ready >= dep.minSeats) {
+    await make(`${dep.name}: купить авиабилеты`, `Готовы ${ready} из ${dep.minSeats} минимальных — группа набрана, можно покупать билеты.`, dep.flightDeadline)
+    await db.departure.update({ where: { id: dep.id }, data: { flightTaskDone: true } })
+  }
+  if (!dep.hotelTaskDone && parts.length > 0 && ready === parts.length && ready >= dep.minSeats) {
+    await make(`${dep.name}: забронировать гостиницу`, `Готовы все ${ready} участников.`, dep.payDeadline)
+    await db.departure.update({ where: { id: dep.id }, data: { hotelTaskDone: true } })
+  }
+}

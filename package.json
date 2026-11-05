@@ -42,6 +42,7 @@
     "@vueuse/nuxt": "^15.0.0",
     "dayjs": "^1.11.23",
     "docxtemplater": "^3.71.1",
+    "exceljs": "^4.4.0",
     "motion-v": "^2.11.0",
     "nodemailer": "^10.3.1",
     "nuxt": "4.6.4",
