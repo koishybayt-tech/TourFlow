@@ -9,4 +9,3 @@ export function periodRange(period: Period, now = new Date()): { from: Date | nu
   if (period === 'year') return { from: new Date(y, 0, 1), to: now, label: `${y} год` }
   return { from: null, to: now, label: 'всё время' }
 }
-

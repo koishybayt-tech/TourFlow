@@ -56,7 +56,7 @@ export interface TourSearchProvider {
 
 // ── Mock ──────────────────────────────────────────────────────────
 const HOTELS: Record<string, { hotel: string, stars: number, resort: string, rating: number, base: number }[]> = {
-  'Турция': [
+  Турция: [
     { hotel: 'Rixos Premium Belek', stars: 5, resort: 'Белек', rating: 4.8, base: 520_000 },
     { hotel: 'Delphin Imperial', stars: 5, resort: 'Лара', rating: 4.7, base: 430_000 },
     { hotel: 'Limak Lara', stars: 5, resort: 'Лара', rating: 4.6, base: 395_000 },
@@ -64,13 +64,13 @@ const HOTELS: Record<string, { hotel: string, stars: number, resort: string, rat
     { hotel: 'Club Marco Polo', stars: 4, resort: 'Кемер', rating: 4.2, base: 245_000 },
     { hotel: 'Akka Alinda', stars: 5, resort: 'Кемер', rating: 4.6, base: 360_000 },
   ],
-  'ОАЭ': [
+  ОАЭ: [
     { hotel: 'Atlantis The Palm', stars: 5, resort: 'Пальма Джумейра', rating: 4.8, base: 780_000 },
     { hotel: 'Rixos The Palm', stars: 5, resort: 'Пальма Джумейра', rating: 4.6, base: 610_000 },
     { hotel: 'Hilton Dubai Jumeirah', stars: 5, resort: 'Джумейра', rating: 4.5, base: 520_000 },
     { hotel: 'Rove Downtown', stars: 3, resort: 'Даунтаун', rating: 4.3, base: 260_000 },
   ],
-  'Египет': [
+  Египет: [
     { hotel: 'Coral Beach Resort', stars: 5, resort: 'Шарм-эль-Шейх', rating: 4.5, base: 300_000 },
     { hotel: 'Rixos Sharm', stars: 5, resort: 'Шарм-эль-Шейх', rating: 4.7, base: 410_000 },
     { hotel: 'Reef Hotel', stars: 4, resort: 'Шарм-эль-Шейх', rating: 4.1, base: 230_000 },
