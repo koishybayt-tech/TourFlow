@@ -37,6 +37,7 @@ const PRIO: Record<string, string> = { HIGH: 'bg-bad', MEDIUM: 'bg-warn', LOW: '
       <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard
           v-if="can('inbox')"
+          :index="0"
           label="Ждут ответа"
           :value="data.focus.waiting"
           icon="i-lucide-message-circle"
@@ -44,6 +45,7 @@ const PRIO: Record<string, string> = { HIGH: 'bg-bad', MEDIUM: 'bg-warn', LOW: '
           to="/inbox?filter=new"
         />
         <StatCard
+          :index="1"
           label="Задачи на сегодня"
           :value="data.focus.tasksToday"
           :hint="data.focus.overdue ? `просрочено: ${data.focus.overdue}` : 'просроченных нет'"
@@ -53,6 +55,7 @@ const PRIO: Record<string, string> = { HIGH: 'bg-bad', MEDIUM: 'bg-warn', LOW: '
         />
         <StatCard
           v-if="can('payments')"
+          :index="2"
           label="Оплаты на неделе"
           :value="data.focus.paymentsWeek"
           hint="доплаты клиентов и операторам"
@@ -61,6 +64,7 @@ const PRIO: Record<string, string> = { HIGH: 'bg-bad', MEDIUM: 'bg-warn', LOW: '
           to="#payments"
         />
         <StatCard
+          :index="3"
           label="Новые заявки"
           :value="data.focus.newDeals"
           hint="на первом этапе"

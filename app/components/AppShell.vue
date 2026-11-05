@@ -10,7 +10,13 @@ watch(() => route.fullPath, () => refreshBadges())
 useIntervalFn(() => refreshBadges(), 60_000)
 
 const open = ref(false)
+const searchOpen = ref(false)
 useLiveConnection()
+// Hotkeys: N — new deal, / — search (⌘K also works).
+defineShortcuts({
+  'n': () => can('deals') && navigateTo('/deals?new=1'),
+  '/': () => (searchOpen.value = true),
+})
 
 function badge(n: number | undefined, color: 'primary' | 'error' | 'warning' = 'primary') {
   return n ? { label: String(n), color, variant: 'subtle' as const, size: 'sm' as const } : undefined
@@ -117,6 +123,7 @@ const searchGroups = computed(() => {
     </UDashboardSidebar>
 
     <UDashboardSearch
+      v-model:open="searchOpen"
       v-model:search-term="searchTerm"
       :groups="searchGroups"
       :loading="searchStatus === 'pending'"

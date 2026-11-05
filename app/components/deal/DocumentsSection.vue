@@ -30,9 +30,15 @@ async function upload() {
     emit('changed', r)
   }
 }
-async function remove(id: string) {
-  if (await mutate(() => api(`/api/documents/${id}`, { method: 'DELETE' }), 'Документ удалён')) emit('changed')
+const hidden = ref<Set<string>>(new Set())
+function remove(id: string) {
+  undoable('Документ удалён', () => api(`/api/documents/${id}`, { method: 'DELETE' }), {
+    hide: () => (hidden.value = new Set([...hidden.value, id])),
+    restore: () => (hidden.value = new Set([...hidden.value].filter(x => x !== id))),
+    done: () => emit('changed'),
+  })
 }
+const visibleDocs = computed(() => props.view.documents.filter(d => !hidden.value.has(d.id)))
 const sizeText = (n: number | null) => (n ? (n > 1_048_576 ? `${(n / 1_048_576).toFixed(1)} МБ` : `${Math.max(1, Math.round(n / 1024))} КБ`) : '')
 </script>
 
@@ -46,11 +52,11 @@ const sizeText = (n: number | null) => (n ? (n > 1_048_576 ? `${(n / 1_048_576).
     :summary="view.documents.map(d => d.type).slice(0, 4).join(', ') || 'нет файлов'"
   >
     <ul
-      v-if="view.documents.length"
+      v-if="visibleDocs.length"
       class="divide-y divide-(--ui-border-muted)"
     >
       <li
-        v-for="d in view.documents"
+        v-for="d in visibleDocs"
         :key="d.id"
         class="flex items-center gap-3 py-2 text-sm"
       >
