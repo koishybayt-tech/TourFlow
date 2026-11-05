@@ -16,7 +16,7 @@ test('Жанна Ким: «Договор» → «Предоплата» only by
   await panel.getByLabel('ИИН').fill('920511450331')
   await panel.getByLabel('Адрес').fill('г. Алматы, ул. Тимирязева, 42, кв. 7')
   await panel.getByRole('button', { name: 'Сохранить' }).click()
-  await expect(page.getByText('Данные клиента сохранены')).toBeVisible()
+  await expect(page.getByText('Данные клиента сохранены').first()).toBeVisible()
   // Still «Договор»: the contract is not signed yet.
   await expect(page.getByRole('combobox', { name: 'Этап заявки' })).toContainText('Договор')
 
@@ -26,7 +26,7 @@ test('Жанна Ким: «Договор» → «Предоплата» only by
   await modal.getByLabel('Файл').setInputFiles({ name: 'Договор — Жанна Ким.pdf', mimeType: 'application/pdf', buffer: Buffer.from('%PDF-1.4\n%%EOF\n') })
   await modal.getByRole('button', { name: 'Загрузить' }).click()
 
-  await expect(page.getByText('Статус обновлён автоматически')).toBeVisible()
+  await expect(page.getByText('Статус обновлён автоматически').first()).toBeVisible()
   await expect(page.getByRole('combobox', { name: 'Этап заявки' })).toContainText('Предоплата')
 })
 
